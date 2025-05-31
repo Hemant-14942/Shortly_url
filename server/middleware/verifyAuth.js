@@ -66,7 +66,7 @@ export const verifyAuth = async (req, res, next) => {
               const baseConfig = { 
                 httpOnly: true, 
                 secure: true,
-                sameSite: 'lax' 
+                sameSite: 'None' 
               };
               
               res.cookie("access_token", accessToken, {
@@ -153,7 +153,7 @@ export const softverifyAuth = async (req, res, next) => {
               const baseConfig = { 
                 httpOnly: true, 
                 secure: true,
-                sameSite: 'lax' 
+                sameSite: 'None' 
               };
               
               res.cookie("access_token", accessToken, {
