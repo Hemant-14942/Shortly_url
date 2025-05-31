@@ -20,8 +20,7 @@ app.use(requestIp.mw());
 const port = process.env.PORT || 3000;
 
 app.use(cors({
-    // origin: "https://url-shortlyy.vercel.app",
-        origin: "http://localhost:5173",
+    origin: "https://url-shortlyy.vercel.app",
     credentials: true
   }));
   
