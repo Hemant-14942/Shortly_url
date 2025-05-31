@@ -28,20 +28,22 @@ const Login = () => {
     setIsLoading(true); // Start loading
 
     try {
-      await axios.post("/api/user/login", form, {
+      const loginResponse = await axios.post("/api/user/login", form, {
         withCredentials: true,
       });
 
-      // Fetch user data after successful login
-      const me = await axios.get("/api/user/me", {
-        withCredentials: true,
-      });
-      
-      if (me.data && me.data.user) {
-        setUser(me.data.user);
-        navigate("/shorten");
-      } else {
-        setError("Login successful but failed to get user data");
+      if (loginResponse.status === 200) {
+        // Fetch user data after successful login
+        const me = await axios.get("/api/user/me", {
+          withCredentials: true,
+        });
+
+        if (me.data && me.data.user) {
+          setUser(me.data.user);
+          navigate("/shorten");
+        } else {
+          setError("Login successful but failed to get user data");
+        }
       }
     } catch (err) {
       console.error("Login error:", err);

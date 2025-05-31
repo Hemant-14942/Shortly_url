@@ -174,8 +174,8 @@ export const logoutPost = async (req, res) => {
 };
 export const getMe = async (req, res) => {
   try {
-    // console.log("req.user--->", req.user);
-    // console.log("req.user.id--->", req.user.id);
+    console.log("req.user--->", req.user);
+    console.log("req.user.id--->", req.user.id);
     const user = await userModel.findById(req.user.id).select("-password");
     if (!user) {
       return res.status(404).json({ message: "User not found" });
