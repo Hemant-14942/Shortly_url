@@ -65,7 +65,7 @@ export const registerPost = async (req, res) => {
     // );
 
     const baseConfig = { httpOnly: true, secure: true,
-      sameSite: 'lax' };
+      sameSite: 'None' };
 
     res.cookie("access_token", accessToken, {
       ...baseConfig,
@@ -140,7 +140,7 @@ export const loginPost = async (req, res) => {
     // );
 
     const baseConfig = { httpOnly: true,secure: true, 
-      sameSite: 'lax'};
+      sameSite: 'None'};
 
     res.cookie("access_token", accessToken, {
       ...baseConfig,
@@ -175,6 +175,9 @@ export const logoutPost = async (req, res) => {
 export const getMe = async (req, res) => {
   try {
     console.log("req.user--->", req.user);
+    if(!req.user){
+      return res.status(401).json({ message: "Unauthorized" });
+    }
     console.log("req.user.id--->", req.user.id);
     const user = await userModel.findById(req.user.id).select("-password");
     if (!user) {
