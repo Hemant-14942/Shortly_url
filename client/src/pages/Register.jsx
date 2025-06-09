@@ -1,8 +1,11 @@
 import { useState } from "react";
 import axios from "../services/api"; // Keep using your axios service
 import { useNavigate } from "react-router-dom"; // Keep using useNavigate
+import { useAuth } from "../context/AuthContext";
+import { toast } from "react-toastify";
 
 const Register = () => {
+  const { setUser } = useAuth();
   const [form, setForm] = useState({
     username: "", // Changed from 'name' to 'username' to match backend
     email: "",
@@ -19,31 +22,44 @@ const Register = () => {
   };
 
   const handleSubmit = async (e) => {
+    // console.log("form handleSubmit k andr aa gya");
     e.preventDefault();
     setIsLoading(true);
     setError("");
     // console.log(form);
     
     try {
-      // Send POST request to register the user
-       await axios.post("/api/user/register", form);
+      // console.log("try k andr aa gya");
+      const loginResponse = await axios.post("/api/user/register", form, {
+        withCredentials: true,
+      });
+      // console.log("loginResponse--->", loginResponse);
 
-      // console.log("✅ Registration successful:", response.data);
+      if (loginResponse.status === 201) {
+        // Fetch user data after successful login
+        // console.log("/me roue chlane wal ahu");
+        
+        const me = await axios.get("/api/user/me", {
+          withCredentials: true,
+        });
+        // console.log("/me roue chlali h chekc kr");
 
-      // Navigate to login on success
-      navigate("/login");
-    } catch (error) {
-      // Log full error object for debugging (optional)
-      // console.error("❌ Registration error:", error.response?.data?.message);
-
-      // Set error message from backend if available, otherwise show fallback
-      setError(
-        error.response?.data?.message ||
-          "Registration failed. Please try again."
-      );
+        if (me.data && me.data.user) {
+          setUser(me.data.user);
+          // console.log("me.data.user---> set krdiya user m", me.data.user);
+          navigate("/");
+        } else {
+          setError("Login successful but failed to get user data");
+          toast.error("Login successful but failed to get user data")
+        }
+      }
+    } catch (err) {
+        console.error("Login error:", err);
+        const msg = err.response?.data?.message || "Something went wrong!";
+        toast.error(`🚫 ${msg}`);
+        setError(msg);
     } finally {
-      // Stop loading spinner or disable button
-      setIsLoading(false);
+      setIsLoading(false); // End loading
     }
     
   };
@@ -56,11 +72,11 @@ const Register = () => {
       >
         <h2 className="text-xl font-bold">Register</h2>
 
-        {error && (
+        {/* {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded text-sm">
             {error}
           </div>
-        )}
+        )} */}
 
         <input
           name="username"

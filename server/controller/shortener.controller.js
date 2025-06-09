@@ -20,6 +20,9 @@ export const shortenUrl = async (req, res) => {
   
       const finalShortcode = customCode || crypto.randomBytes(4).toString("hex");
   
+      // console.log("finalShortcode", finalShortcode);
+      
+  
       const existing = await Shortcode.findOne({ shortcode: finalShortcode });
       if (existing) {
         return res.status(409).json({
